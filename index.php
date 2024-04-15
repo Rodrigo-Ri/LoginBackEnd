@@ -27,6 +27,9 @@
     <?php 
 
       use app\controllers\viewsController;
+      use app\controllers\loginController;
+
+      $insLogin = new loginController();
 
       $viewsController = new viewsController();
       $vista = $viewsController->obtenerVistasControlador($url[0]);
