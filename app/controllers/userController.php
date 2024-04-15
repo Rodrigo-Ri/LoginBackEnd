@@ -229,6 +229,73 @@
             } else {
                 $foto = "";
             }
+
+            $usuario_datos_reg = [
+                [
+                    "campo_nombre" => "usuario_name",
+                    "campo_marcador" => ":Nombre",
+                    "campo_valor" => $nombre
+                ],
+                [
+                    "campo_nombre" => "usuario_lastname",
+                    "campo_marcador" => ":Apellido",
+                    "campo_valor" => $apellido
+                ],
+                [
+                    "campo_nombre" => "usuario_email",
+                    "campo_marcador" => ":Email",
+                    "campo_valor" => $email
+                ],
+                [
+                    "campo_nombre" => "usuario_user",
+                    "campo_marcador" => ":Usuario",
+                    "campo_valor" => $usuario
+                ],
+                [
+                    "campo_nombre" => "usuario_key",
+                    "campo_marcador" => ":Clave",
+                    "campo_valor" => $clave
+                ],
+                [
+                    "campo_nombre" => "usuario_photo",
+                    "campo_marcador" => ":Foto",
+                    "campo_valor" => $foto
+                ],
+                [
+                    "campo_nombre" => "usuario_created",
+                    "campo_marcador" => ":Creado",
+                    "campo_valor" => date("Y-m-d H:i:s")
+                ],
+                [
+                    "campo_nombre" => "usuario_updated",
+                    "campo_marcador" => ":Actualizado",
+                    "campo_valor" => date("Y-m-d H:i:s")
+                ]
+            ];
             
+            $registrar_usuario = $this->guardarDatos("usuario", $usuario_datos_reg);
+
+            if ($registrar_usuario->rowCount()==1) {
+                # code...
+                $alerta = [
+                    "tipo" => "limpiar",
+                    "titulo" => "Usuario registrado",
+                    "texto" => "El usuario ".$nombre." ". $apellido." ha sido registrado con éxito",
+                    "icono" => "success"
+                ];
+            } else {
+                if(is_file($img_dir.$foto)){
+                    chmod($img_dir.$foto, 0777);
+                    unlink($img_dir.$foto);
+                }
+                # code...
+                $alerta = [
+                    "tipo" => "simple",
+                    "titulo" => "Ocurrió un error inesperado",
+                    "texto" => "Usuaruio no registrado",
+                    "icono" => "error"
+                ];
+            }
+            return json_encode($alerta);
         }
     }
