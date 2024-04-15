@@ -149,5 +149,86 @@
 
             # Directorio de la imágenes #
             $img_dir = "../views/fotos/";
+
+            # Comprobar sis e seleccionó una imagen doble #
+            if ($_FILES['usuario_foto']['name'] != "" && $_FILES['usuario_foto']['size'] > 0) {
+                # Creadno directiorio #
+                if(!file_exists($img_dir)){
+                    if(mkdir(!$img_dir, 0777)){
+                        $alerta = [
+                            "tipo" => "simple",
+                            "titulo" => "Ocurrió un error inesperado",
+                            "texto" => "Error al crear el directorio.",
+                            "icono" => "error"
+                        ];
+        
+                        return json_encode($alerta);
+                        exit();
+                    }
+
+                }
+
+                # Verifficando el formato de la imagen #
+                if(mime_content_type($_FILES['usuario_foto']['tmp_name'] != "image/jpeg" && mime_content_type($_FILES['usuario_foto']['tmp_name']) != "image/png")){
+                    $alerta = [
+                        "tipo" => "simple",
+                        "titulo" => "Ocurrió un error inesperado",
+                        "texto" => "El formato de la imagen no es válido",
+                        "icono" => "error"
+                    ];
+    
+                    return json_encode($alerta);
+                    exit();
+
+                }
+
+                # Verficando el tamaño de la imagen #
+                if(($_FILES['usuario_foto']['size'] / 1024) > 5120){
+                    $alerta = [
+                        "tipo" => "simple",
+                        "titulo" => "Ocurrió un error inesperado",
+                        "texto" => "El tamaño de la imagen no es válido",
+                        "icono" => "error"
+                    ];
+    
+                    return json_encode($alerta);
+                    exit();
+
+                }
+
+                # Nombre de la foto Rodrigo Rivera -> Rodrigo_Rivera #
+                $foto = str_ireplace(" ","_", $nombre);
+                $foto = $foto."_".rand(0, 100);
+
+                # Extensión de la imagen #
+                switch(mime_content_type($_FILES['usuario_foto']['tmp_name'])){
+                    case "image/jpeg":
+                        $foto = $foto.".jpg";
+                        break;
+                    case "image/png":
+                        $foto = $foto.".png";
+                        break;
+                }
+
+                chmod($img_dir, 0777);
+
+                # Moviendo la imagen al directorio #
+                if(!move_uploaded_file($_FILES['usuario_foto']['tmp_name'], $img_dir.$foto)){
+                    $alerta = [
+                        "tipo" => "simple",
+                        "titulo" => "Ocurrió un error inesperado",
+                        "texto" => "Error al subir la imagen",
+                        "icono" => "error"
+                    ];
+    
+                    return json_encode($alerta);
+                    exit();
+
+                }
+
+            } else {
+                $foto = "";
+            }
+            
         }
     }
