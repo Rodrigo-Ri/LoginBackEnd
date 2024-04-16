@@ -333,5 +333,88 @@
 
             $numeroPaginas = ceil($total/$registro);
 
+            $tabla .= '<div class="table-container">
+                        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th class="has-text-centered">#</th>
+                                    <th class="has-text-centered">Nombre</th>
+                                    <th class="has-text-centered">Usuario</th>
+                                    <th class="has-text-centered">Email</th>
+                                    <th class="has-text-centered">Creado</th>
+                                    <th class="has-text-centered">Actualizado</th>
+                                    <th class="has-text-centered" colspan="3">Opciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>';
+
+            if ($total>=1 && $pagina<=$numeroPaginas) {
+                # code...
+                $contador = $inicio+1;
+                $pag_inicio = $inicio+1;
+
+                foreach ($datos as $rows) {
+                    # code...
+                    $tabla .= '<tr class="has-text-centered">
+                                <td>'.$contador.'</td>
+                                <td>'.$rows['usuario_name'].' '.$rows['usuario_lastname'].'</td>
+                                <td>'.$rows['usuario_user'].'</td>
+                                <td>'.$rows['usuario_email'].'</td>
+                                <td>'.date("d-m-Y h:i:s A", strtotime($rows['usuario_created'])).'</td>
+                                <td>'.date("d-m-Y h:i:s A", strtotime($rows['usuario_updated'])).'</td>
+                                <td>
+                                    <a href="'.APP_URL.'userPhoto/'.$rows['usuario_id'].'/" class="button is-info is-rounded is-small">Foto</a>
+                                </td>
+                                <td>
+                                    <a href="'.APP_URL.'userUpdate/'.$rows['usuario_id'].'/" class="button is-success is-rounded is-small">Actualizar</a>
+                                </td>
+                                <td>
+                                    <form class="FormularioAjax" action="'.APP_URL.'app/ajax/usuarioAjax.php" method="POST" autocomplete="off">
+
+                                        <input type="hidden" name="modulo_usuario" value="eliminar">
+                                        <input type="hidden" name="usuario_id" value="'.$rows['usuario_id'].'">
+
+                                        <button type="submit" class="button is-danger is-rounded is-small">Eliminar</button>
+                                    </form>
+                                </td>
+                            </tr>';
+                    $contador++;
+                }
+
+                $pag_final = $contador-1;
+            } else {
+                # code...
+                if ($total>=1) {
+                    # code...
+                    $tabla .= '<tr class="has-text-centered" >
+                                <td colspan="7">
+                                    <a href="'.$url.'1/" class="button is-link is-rounded is-small mt-4 mb-4">
+                                        Haga clic acá para recargar el listado
+                                    </a>
+                                </td>
+                            </tr>';
+                } else {
+                    # code...
+                    $tabla .= '<tr class="has-text-centered" >
+                                <td colspan="7">
+                                    No hay registros en el sistema
+                                </td>
+                            </tr>';
+                }
+                
+            }
+            
+
+            $tabla .= '</tbody>
+                </table>
+            </div>';
+
+            if($total>=1 && $pagina<=$numeroPaginas){
+                $tabla .= '<p class="has-text-right">Mostrando usuarios <strong>'.$pag_inicio.'</strong> al <strong>'.$pag_final.'</strong> de un <strong>total de '.$total.'</strong></p>';
+                $tabla .= $this->paginadorTablas($pagina, $numeroPaginas, $url, 7);
+
+            }
+
+            return $tabla;
         }
     }
