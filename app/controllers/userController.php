@@ -280,7 +280,7 @@
                 $alerta = [
                     "tipo" => "limpiar",
                     "titulo" => "Usuario registrado",
-                    "texto" => "El usuario ".$nombre." ". $apellido." ha sido registrado con éxito",
+                    "texto" => "El usuario ".$usuario." ha sido registrado con éxito",
                     "icono" => "success"
                 ];
             } else {

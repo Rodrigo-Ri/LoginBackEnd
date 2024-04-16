@@ -75,3 +75,25 @@ function alertas_ajax(alerta){
         window.location.href = alerta.url;
     }
 }
+
+/* Botónj para cerrar la sesión */
+let btn_exit = document.getElementById("btn_exit");
+
+btn_exit.addEventListener("click", function(e){
+    e.preventDefault();
+    Swal.fire({
+        title: '¿Está seguro?',
+        text: "¿Quiere cerrar la sesión?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '¡Sí, cerrar!', 
+        cancelButtonText: 'No, cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let url = this.getAttribute("href");
+            window.location.href = url;
+        }
+    });
+});
