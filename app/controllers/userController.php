@@ -404,7 +404,6 @@
                 
             }
             
-
             $tabla .= '</tbody>
                 </table>
             </div>';
@@ -417,4 +416,68 @@
 
             return $tabla;
         }
+
+        # Controlador para eliminar usuario #
+        public function eliminarUsuarioControlador(){
+            $id = $this->limpiarCadena($_POST['usuario_id']);
+
+            if($id==1){
+                $alerta = [
+                    "tipo"=>"simple",
+                    "titulo"=>"Ocurrió un error inesperado",
+                    "texto"=>"No puedes eliminar el usuario principal del sistema",
+                    "icono"=>"error"
+                ];
+
+                return json_encode($alerta);
+                exit();
+
+            }
+
+            # Verificar si el usuario existe #
+            $datos = $this->ejecutarConsulta("SELECT * FROM usuario WHERE usuario_id='$id'");
+
+            if ($datos->rowCount()<=0) {
+                # code...
+                $alerta = [
+                    "tipo"=>"simple",
+                    "titulo"=>"Ocurrió un error inesperado",
+                    "texto"=>"El usuario que intentas eliminar no existe en el sistema",
+                    "icono"=>"error"
+                ];
+                return json_encode($alerta);
+                exit();
+            } else {
+                # code...
+                $datos = $datos->fetch();
+            }
+            
+            $eliminarUsuario = $this->eliminarRegistro("usuario","usuario_id", $id);
+
+            if ($eliminarUsuario->rowCount()==1) {
+                # code...
+                if(is_file("../views/fotos/".$datos['usuario_photo'])){
+                    chmod("../views/fotos/".$datos['usuario_photo'], 0777);
+                    unlink("../views/fotos/".$datos['usuario_photo']);
+                }
+
+                $alerta = [
+                    "tipo"=>"recargar",
+                    "titulo"=>"Usuario eliminado",
+                    "texto"=>"El usuario ".$datos['usuario_name']." ".$datos['usuario_lastname']." ha sido eliminado con éxito",
+                    "icono"=>"success"
+                ];
+            } else {
+                # code...
+                $alerta = [
+                    "tipo"=>"simple",
+                    "titulo"=>"Ocurrió un error inesperado",
+                    "texto"=>"No se pudo eliminar el usuario ".$datos['usuario_name']." ".$datos['usuario_lastname']."",
+                    "icono"=>"error"
+                ];
+            }
+            return json_encode($alerta);
+
+        }
+        
     }
