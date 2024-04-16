@@ -113,4 +113,21 @@
                 
             }
         }
+
+        # Controlador para cerrar sesión #
+        public function cerrarSesionControlador(){
+            session_destroy();
+
+            if (headers_sent()) {
+                # code...
+                echo "
+                    <scrip>
+                        window.location.href='".APP_URL."login/';
+                    </script>
+                ";
+            } else {
+                # code...
+                header("Location: ".APP_URL."login/");
+            }
+        }
     }
