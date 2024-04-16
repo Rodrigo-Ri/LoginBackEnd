@@ -38,7 +38,7 @@
         require_once "./app/views/content/".$vista."-view.php"; 
       } else {
         # Cerrar sesión #
-        if(!isset($_SESSION['id'])  || !isset($_SESSION['nombre']) || !isset($_SESSION['usuario']) || !isset($_SESSION['id'])=="" || !isset($_SESSION['nombre'])=="" || !isset($_SESSION['usuario'])==""){
+        if(!isset($_SESSION['id'])  || !isset($_SESSION['nombre']) || !isset($_SESSION['usuario']) || isset($_SESSION['id'])=="" || isset($_SESSION['nombre'])=="" || isset($_SESSION['usuario'])==""){
           $insLogin->cerrarSesionControlador();
           exit();
         }
