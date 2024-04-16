@@ -298,4 +298,40 @@
             }
             return json_encode($alerta);
         }
+
+        # Controlador listar usuario #
+        public function listarUsuarioControlador($pagina, $registro, $url, $busqueda){
+            $pagina = $this->limpiarCadena($pagina);
+            $registro = $this->limpiarCadena($registro);
+
+            $url = $this->limpiarCadena($url);
+            $url = APP_URL.$url."/";
+
+            $busqueda = $this->limpiarCadena($busqueda);
+            $tabla = "";
+
+            $pagina = (isset($pagina) && $pagina>0) ? (int) $pagina : 1;
+            $inicio = ($pagina>0) ? (($pagina*$registro)-$registro) : 0;
+
+            if (isset($busqueda) && $busqueda!="") {
+                # code...
+                $consulta_datos = "SELECT * FROM usuario WHERE ((usuario_id != '".$_SESSION['id']."' AND usuario_id != '1') AND (usuario_name LIGHT '%$busqueda%' OR usuario_lastname LIGHT '%$busqueda%' OR usuario_email LIGHT '%$busqueda%' OR usuario_user LIGHT '%$busqueda%')) ORDER BY usuario_name ASC LIMIT $inicio, $registro";
+
+                $consulta_total = "SELECT COUNT() FROM usuario WHERE ((usuario_id != '".$_SESSION['id']."' AND usuario_id != '1') AND (usuario_name LIGHT '%$busqueda%' OR usuario_lastname LIGHT '%$busqueda%' OR usuario_email LIGHT '%$busqueda%' OR usuario_user LIGHT '%$busqueda%')) ORDER BY usuario_name ASC LIMIT $inicio, $registro";
+            } else {
+                # code...
+                $consulta_datos = "SELECT * FROM usuario WHERE usuario_id != '".$_SESSION['id']."' AND usuario_id != '1' ORDER BY usuario_name ASC LIMIT $inicio, $registro";
+
+                $consulta_total = "SELECT COUNT(usuario_id) FROM usuario WHERE usuario_id != '".$_SESSION['id']."' AND usuario_id != '1'";
+            }
+            
+            $datos = $this->ejecutarConsulta($consulta_datos);
+            $datos = $datos->fetchAll();
+
+            $total = $this->ejecutarConsulta($consulta_total);
+            $total = (int) $total->fetchColumn();
+
+            $numeroPaginas = ceil($total/$registro);
+
+        }
     }
