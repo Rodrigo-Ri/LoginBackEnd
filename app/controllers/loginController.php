@@ -53,6 +53,60 @@
                         ";
                     } else {
                         # code...
+                        # Verificando usuario #
+                        $chek_usuario = $this->ejecutarConsulta("SELECT * FROM usuario WHERE usuario_user='$usuario'");
+
+                        if ($chek_usuario->rowCount()==1) {
+                            # code...
+                            $chek_usuario = $chek_usuario->fetch();
+                            if ($chek_usuario['usuario_user']==$usuario && password_verify($clave, $chek_usuario['usuario_key'])) {
+                                # code...
+                                $_SESSION['id'] = $chek_usuario['usuario_id'];
+                                $_SESSION['nombre'] = $chek_usuario['usuario_name'];
+                                $_SESSION['apellido'] = $chek_usuario['usuario_lastname'];
+                                $_SESSION['usuario'] = $chek_usuario['usuario_user'];
+                                $_SESSION['foto'] = $chek_usuario['usuario_photo'];
+
+                                if (headers_sent()) {
+                                    # code...
+                                    echo "
+                                        <scrip>
+                                            window.location.href='".APP_URL."dashboard/';
+                                        </script>
+                                    ";
+                                } else {
+                                    # code...
+                                    header("Location: ".APP_URL."dashboard/");
+                                }
+                                
+                            } else {
+                                # code...
+                                echo "
+                                <script>
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Ocurrió un error inesperado',
+                                        text: 'Usuario o clave incorrectos',
+                                        confirmButtonText: 'Aceptar'
+                                    });
+                                </script>
+                                ";
+                            }
+                            
+                        } else {
+                            # code...
+                            echo "
+                            <script>
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Ocurrió un error inesperado',
+                                    text: 'Usuario o clave incorrectos',
+                                    confirmButtonText: 'Aceptar'
+                                });
+                            </script>
+                            ";
+                        }
+                        
                     }
                     
                 }
